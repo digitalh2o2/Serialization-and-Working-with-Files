@@ -4,6 +4,7 @@ class Hangman
 
 	def initialize
 		@turn = 0
+		@secret_word = dictionary
 	end
 end
 	#this will read through the 5desk.txt file and generate a random word between 5 - 12 characters long
