@@ -1,12 +1,13 @@
 #hangman class that will hold the methods
 class Hangman
-	attr_accessor :turn
+	attr_accessor :turn, :secret_word
 
 	def initialize
 		@turn = 0
 		@secret_word = dictionary
+		@guessed_letters = []
 	end
-end
+
 	#this will read through the 5desk.txt file and generate a random word between 5 - 12 characters long
 	def dictionary
 		words = File.read("../5desk.txt")
@@ -23,14 +24,13 @@ end
 
 
 	def instructions
-		puts "In this game of Hangman you'll have 10 chances to guess the secret word!"
+		puts "In this game of Hangman you'll have 12 chances to guess the secret word!"
 		puts "Every correct & incorrect letter will be reflected after the round"
 		puts "Let's begin!"
 	end
 
 	#starts the game
 	def start_game
-		print dictionary
 		puts ""
 		puts "||================================||"
 		puts "||Welcome to the game of Hangman!!||"
@@ -44,38 +44,59 @@ end
 
 	#this is where the input checks to see if player has won
 	def play_game
-		puts "Please enter your guess. Remember, one character at a time"
-		guess = gets.chomp.downcase
-		feedback = answer(guess)
-		if feedback == dictionary
-			puts "||~~~~~~~~~~||"
-			puts "||~You won!~||"
-			puts "||~~~~~~~~~~||"
-		else
-			puts "You haven't solved the answer just yet."
-			puts "Here is the current status of the game.....#{feedback}"
-			puts "Keep trying!"
-			puts "-------------------"
-			@turn += 1
-			puts "That was turn number " + @turn.to_s
-			start_game
-		end
-		puts "You reached the max turns of 10!"
-	end
-
-	#will compare players guess with random word
-	def answer(guess)
-		feedback = []
-		guess.each_with_index { |letter, index|
-			if dictionary.include?(letter)
-				if dictionary[letter] == guess[letter]
-					feedback << letter
-				else
-					feedback << "-"
-				end
+		while @turn < 13
+			puts "Please enter your guess. Remember, one character at a time"
+			guess = gets.chomp.downcase
+			current_display = answer(guess)
+			if current_display == @secret_word
+				puts "||~~~~~~~~~~||"
+				puts "||~You won!~||"
+				puts "||~~~~~~~~~~||"
+				puts "You guess the secret word: #{@secret_word.join("")}"
+				exit
+			else
+				puts "You haven't solved the answer just yet."
+				puts "Here is the current status of the game.....#{current_display}"
+				puts "Keep trying!"
+				puts "-------------------"
+				puts "That was turn number " + @turn.to_s
+				play_game
 			end
-		}
-		feedback.to_a
+			game_over
+		end
 	end
 
-start_game
+	def game_over
+		puts "You lost!"
+		puts "The secret word was #{@secret_word.join("")}"
+		exit
+	end
+
+	def answer(guess)
+		if @secret_word.include?(guess)
+			puts "Great guess!"
+			@guessed_letters << guess
+			display_word
+		else
+			puts "Oops!! Incorrect"
+			@turn += 1
+			display_word
+		end
+	end
+
+	def display_word
+		current_display = []
+		@secret_word.each do |letter|
+			if @guessed_letters.include?(letter)
+				current_display << letter
+			else
+				current_display << "-"
+			end
+		end
+		current_display.to_a
+	end
+
+end
+
+game = Hangman.new
+game.start_game
