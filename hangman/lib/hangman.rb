@@ -49,7 +49,6 @@ class Hangman
 		if menu_input == 1
 			play_game
 		elsif menu_input == 2
-			puts "Game loaded successfully!"
 			load_game
 		else menu_input == 3
 			credits
@@ -158,6 +157,9 @@ class Hangman
 		puts "What game would you like to load?"		
 		load_game = gets.chomp
 		load_game = File.open("../saved_games/#{load_game}.yaml","r")
+		puts "Loading..."
+		puts "....and"
+		puts "done!"
 		game = File.read(load_game)
 		YAML::load(game).play_game
 	end
