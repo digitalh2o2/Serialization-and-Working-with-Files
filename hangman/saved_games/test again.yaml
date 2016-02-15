@@ -1,0 +1,16 @@
+--- !ruby/object:Hangman
+turn: 1
+secret_word:
+- s
+- m
+- u
+- d
+- g
+- e
+guessed_letters:
+- s
+- e
+empty_letters:
+- i
+player: !ruby/object:Player
+  name: Saul
